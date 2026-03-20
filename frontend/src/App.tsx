@@ -1,78 +1,99 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { OlympusSection } from './components/OlympusSection';
 import { BeesSection } from './components/BeesSection';
 import { ScoreBoard } from './components/ScoreBoard';
 
+export type Day = 'J1' | 'J2' | 'J3' | 'J4' | 'J5' | 'Global';
+
+const criteriaKeys = ['Bouffe', 'Ambiance', 'Projets', 'Respect'];
+const emptyRatings = () => criteriaKeys.reduce((acc, key) => ({ ...acc, [key]: 0 }), {} as Record<string, number>);
+
 function App() {
-  const [scores, setScores] = useState({ olympusScore: 0, beesScore: 0 });
-  const [totalLimit] = useState(40);
+  const [selectedDay, setSelectedDay] = useState<Day>('J1');
 
-  // V2 Ratings States
-  const [olympusRatings, setOlympusRatings] = useState<Record<string, number>>({
-    'Bouffe': 7,
-    'Ambiance': 6,
-    'Projets': 9,
-    'Respect': 8
+  // Days State
+  const [olympusDays, setOlympusDays] = useState<Record<string, Record<string, number>>>({
+    J1: { 'Bouffe': 7, 'Ambiance': 6, 'Projets': 9, 'Respect': 8 }, // Mock initial
+    J2: emptyRatings(),
+    J3: emptyRatings(),
+    J4: emptyRatings(),
+    J5: emptyRatings(),
   });
 
-  const [beesRatings, setBeesRatings] = useState<Record<string, number>>({
-    'Bouffe': 8,
-    'Ambiance': 10,
-    'Projets': 7,
-    'Respect': 5
+  const [beesDays, setBeesDays] = useState<Record<string, Record<string, number>>>({
+    J1: { 'Bouffe': 8, 'Ambiance': 10, 'Projets': 7, 'Respect': 5 }, // Mock initial
+    J2: emptyRatings(),
+    J3: emptyRatings(),
+    J4: emptyRatings(),
+    J5: emptyRatings(),
   });
 
-  useEffect(() => {
-    // Fetch initial scores from the backend
-    const fetchScores = async () => {
-      try {
-        const response = await fetch('http://localhost:3001/api/scores');
-        if (response.ok) {
-          const data = await response.json();
-          if (data) {
-            setScores({ olympusScore: data.olympusScore, beesScore: data.beesScore });
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching scores:', error);
-      }
-    };
-    fetchScores();
-  }, []);
+  // Calculate Global
+  const getGlobalRatings = (daysState: Record<string, Record<string, number>>) => {
+    const global: Record<string, number> = emptyRatings();
+    Object.keys(daysState).forEach(dayKey => {
+      criteriaKeys.forEach(k => {
+        global[k] += daysState[dayKey][k] || 0;
+      });
+    });
+    return global;
+  };
+
+  const currentOlympusRatings = selectedDay === 'Global' ? getGlobalRatings(olympusDays) : olympusDays[selectedDay as string];
+  const currentBeesRatings = selectedDay === 'Global' ? getGlobalRatings(beesDays) : beesDays[selectedDay as string];
+
+  const olympusScore = criteriaKeys.reduce((sum, k) => sum + (currentOlympusRatings[k] || 0), 0);
+  const beesScore = criteriaKeys.reduce((sum, k) => sum + (currentBeesRatings[k] || 0), 0);
+  
+  // Total limit: 4 criteria * 10 max per day = 40. Global = 200.
+  const totalLimit = selectedDay === 'Global' ? 200 : 40;
+  // Radar Max Value
+  const radarMaxVal = selectedDay === 'Global' ? 50 : 10;
 
   const handleRatingChange = (team: 'olympus' | 'bees', criteria: string, value: number) => {
+    if (selectedDay === 'Global') return; // Read-only in Global view
+
     if (team === 'olympus') {
-      setOlympusRatings(prev => ({ ...prev, [criteria]: value }));
+      setOlympusDays(prev => ({
+        ...prev,
+        [selectedDay]: { ...prev[selectedDay], [criteria]: value }
+      }));
     } else {
-      setBeesRatings(prev => ({ ...prev, [criteria]: value }));
+      setBeesDays(prev => ({
+        ...prev,
+        [selectedDay]: { ...prev[selectedDay], [criteria]: value }
+      }));
     }
   };
 
   return (
-    <div className="w-screen h-screen flex flex-col md:flex-row overflow-hidden bg-zinc-900">
+    <div className="w-screen h-screen flex flex-col md:flex-row overflow-hidden bg-[#050505]">
       {/* Olympus Side */}
-      <div className="w-full h-1/2 md:w-1/2 md:h-full relative">
+      <div className="w-full h-1/2 md:w-1/2 md:h-full relative overflow-y-auto md:overflow-hidden">
         <OlympusSection
-          ratings={olympusRatings}
+          ratings={currentOlympusRatings}
           onRatingChange={(crit, val) => handleRatingChange('olympus', crit, val)}
         />
       </div>
 
       {/* Bees Side */}
-      <div className="w-full h-1/2 md:w-1/2 md:h-full relative">
+      <div className="w-full h-1/2 md:w-1/2 md:h-full relative overflow-y-auto md:overflow-hidden">
         <BeesSection
-          ratings={beesRatings}
+          ratings={currentBeesRatings}
           onRatingChange={(crit, val) => handleRatingChange('bees', crit, val)}
         />
       </div>
 
       {/* Central Interactive Scoreboard w/ Radar Chart */}
       <ScoreBoard
-        olympusScore={scores.olympusScore}
-        beesScore={scores.beesScore}
+        olympusScore={olympusScore}
+        beesScore={beesScore}
         totalLimit={totalLimit}
-        olympusRatings={olympusRatings}
-        beesRatings={beesRatings}
+        radarMaxVal={radarMaxVal}
+        olympusRatings={currentOlympusRatings}
+        beesRatings={currentBeesRatings}
+        selectedDay={selectedDay}
+        onSelectDay={setSelectedDay}
       />
     </div>
   );

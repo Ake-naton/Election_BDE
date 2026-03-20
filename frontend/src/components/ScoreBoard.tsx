@@ -1,21 +1,28 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { RadarChart } from './RadarChart';
+import type { Day } from '../App';
 
 interface Props {
     olympusScore: number;
     beesScore: number;
     totalLimit?: number;
+    radarMaxVal?: number;
     olympusRatings: Record<string, number>;
     beesRatings: Record<string, number>;
+    selectedDay: Day;
+    onSelectDay: (day: Day) => void;
 }
 
 export const ScoreBoard: React.FC<Props> = ({
     olympusScore,
     beesScore,
     totalLimit = 40,
+    radarMaxVal = 10,
     olympusRatings,
-    beesRatings
+    beesRatings,
+    selectedDay,
+    onSelectDay
 }) => {
     // Convert dictionaries array in fixed order: 'Bouffe', 'Ambiance', 'Projets', 'Respect'
     const keys = ['Bouffe', 'Ambiance', 'Projets', 'Respect'];
@@ -25,9 +32,26 @@ export const ScoreBoard: React.FC<Props> = ({
     return (
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 flex flex-col items-center gap-3">
 
+            {/* Pill Navigation J1-J5 + Global */}
+            <div className="flex bg-black/60 backdrop-blur-2xl p-1.5 rounded-full border border-white/10 shadow-2xl z-50 mb-1">
+                {(['J1', 'J2', 'J3', 'J4', 'J5', 'Global'] as Day[]).map(day => (
+                    <button
+                        key={day}
+                        onClick={() => onSelectDay(day)}
+                        className={`px-4 py-1.5 rounded-full text-[10px] md:text-xs font-bold tracking-widest uppercase transition-all duration-300 ${
+                            selectedDay === day 
+                            ? 'bg-white text-black shadow-[0_0_15px_rgba(255,255,255,0.4)] scale-105' 
+                            : 'text-white/50 hover:text-white hover:bg-white/10'
+                        }`}
+                    >
+                        {day}
+                    </button>
+                ))}
+            </div>
+
             {/* Header Score */}
             <motion.div
-                animate={{ y: [-5, 5, -5] }}
+                animate={{ y: [-3, 3, -3] }}
                 transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
             >
                 <div className="glass-scoreboard rounded-2xl p-4 flex flex-col items-center min-w-[300px]">
@@ -37,7 +61,7 @@ export const ScoreBoard: React.FC<Props> = ({
 
                     <div className="flex items-center justify-between w-full mb-3 px-6">
                         <span className="text-4xl font-olympus text-olympusGold text-glow-gold">{olympusScore}</span>
-                        <span className="text-sm font-bold text-white tracking-[0.3em] px-4 drop-shadow-md">VS</span>
+                        <span className="text-xs font-black text-white tracking-[0.3em] px-4 drop-shadow-md">VS</span>
                         <span className="text-4xl font-bees font-black text-white text-glow-yellow">{beesScore}</span>
                     </div>
 
@@ -55,18 +79,20 @@ export const ScoreBoard: React.FC<Props> = ({
 
             {/* Radar Chart */}
             <motion.div
-                animate={{ y: [5, -5, 5] }} // Counter-bop to the top panel
+                animate={{ y: [3, -3, 3] }} // Counter-bop to the top panel
                 transition={{ repeat: Infinity, duration: 5, ease: "easeInOut" }}
             >
                 <div className="glass-scoreboard rounded-3xl p-4 min-w-[320px] relative overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white/5 pointer-events-none" />
-                    <RadarChart olympusData={olympusData} beesData={beesData} maxVal={10} />
+                    <RadarChart olympusData={olympusData} beesData={beesData} maxVal={radarMaxVal} />
                 </div>
             </motion.div>
 
             {/* Final Global Call To Action */}
             <button className="glass-button px-8 py-3 rounded-full text-white font-base text-xs font-bold tracking-widest uppercase transition-all duration-300 hover:scale-[1.03] active:scale-95 hover:text-white/90 relative overflow-hidden group">
-                <span className="relative z-10">Confirmer le vote</span>
+                <span className="relative z-10 transition-transform">
+                    {selectedDay === 'Global' ? 'Bilan Global & Clôture' : `Enregistrer les notes du ${selectedDay}`}
+                </span>
                 <div className="absolute inset-0 bg-gradient-to-r from-olympusGold/30 to-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             </button>
 
