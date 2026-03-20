@@ -25,47 +25,49 @@ export const ScoreBoard: React.FC<Props> = ({
     return (
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 flex flex-col items-center gap-6">
 
-            {/* 1. Header Score (Compact) */}
+            {/* Header Score */}
             <motion.div
                 animate={{ y: [-5, 5, -5] }}
                 transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
             >
-                <div className="bg-white/5 backdrop-blur-[24px] saturate-150 border border-white/10 shadow-lg rounded-2xl p-4 flex flex-col items-center min-w-[280px]">
-                    <h2 className="text-white font-base font-medium uppercase tracking-[0.2em] text-xs mb-3 opacity-70">
+                <div className="glass-scoreboard rounded-2xl p-5 flex flex-col items-center min-w-[320px]">
+                    <h2 className="text-white font-base font-semibold uppercase tracking-[0.3em] text-xs mb-4 opacity-80 shine-effect">
                         The Arbitrator
                     </h2>
 
-                    <div className="flex items-center justify-between w-full mb-2 px-4">
-                        <span className="text-3xl font-olympus text-olympusGold drop-shadow-md">{olympusScore}</span>
-                        <span className="text-sm font-light text-white/40 tracking-widest">VS</span>
-                        <span className="text-4xl font-bees font-black text-beesYellow drop-shadow-md">{beesScore}</span>
+                    <div className="flex items-center justify-between w-full mb-4 px-6">
+                        <span className="text-4xl font-olympus text-olympusGold text-glow-gold">{olympusScore}</span>
+                        <span className="text-sm font-bold text-white/30 tracking-[0.3em] px-4">VS</span>
+                        <span className="text-4xl font-bees font-black text-beesYellow text-glow-yellow">{beesScore}</span>
                     </div>
 
-                    <div className="w-full h-1 bg-white/10 rounded-full mt-2 overflow-hidden relative">
+                    <div className="w-full h-1.5 bg-white/10 rounded-full mt-2 overflow-hidden relative shadow-inner">
                         <div
-                            className="absolute top-0 left-0 h-full bg-gradient-to-r from-olympusGold to-beesYellow transition-all duration-1000 ease-out"
+                            className="absolute top-0 left-0 h-full bg-gradient-to-r from-olympusGold via-white to-beesYellow transition-all duration-1000 ease-in-out shadow-[0_0_10px_rgba(255,255,255,0.5)]"
                             style={{ width: `${Math.min(((olympusScore + beesScore) / totalLimit) * 100, 100)}%` }}
                         />
                     </div>
-                    <div className="mt-2 text-white/40 text-xs font-base">
+                    <div className="mt-3 text-white/50 text-xs font-base tracking-widest uppercase">
                         Target: {totalLimit}
                     </div>
                 </div>
             </motion.div>
 
-            {/* 2. Radar Chart (New Panel) */}
+            {/* Radar Chart */}
             <motion.div
                 animate={{ y: [5, -5, 5] }} // Counter-bop to the top panel
                 transition={{ repeat: Infinity, duration: 5, ease: "easeInOut" }}
             >
-                <div className="bg-white/5 backdrop-blur-[24px] saturate-150 border border-white/10 shadow-xl rounded-3xl p-6 min-w-[340px]">
+                <div className="glass-scoreboard rounded-3xl p-6 min-w-[360px] relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white/5 pointer-events-none" />
                     <RadarChart olympusData={olympusData} beesData={beesData} maxVal={10} />
                 </div>
             </motion.div>
 
-            {/* 3. Final Global Call To Action */}
-            <button className="glassmorphism bg-white/10 hover:bg-white/20 px-8 py-3 rounded-full text-white font-base text-sm font-semibold tracking-wide transition-all duration-300 hover:shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:scale-105 active:scale-95">
-                Finaliser ma décision et Confirmer le vote
+            {/* Final Global Call To Action */}
+            <button className="glass-button px-10 py-4 rounded-full text-white font-base text-sm font-bold tracking-widest uppercase transition-all duration-300 hover:scale-[1.03] active:scale-95 hover:text-white/90 relative overflow-hidden group">
+                <span className="relative z-10">Confirmer le vote</span>
+                <div className="absolute inset-0 bg-gradient-to-r from-olympusGold/20 to-beesYellow/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             </button>
 
         </div>

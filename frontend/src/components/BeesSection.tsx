@@ -14,8 +14,9 @@ export const BeesSection: React.FC<Props> = ({ ratings, onRatingChange }) => {
         const handleMouseMove = (e: MouseEvent) => {
             if (!sectionRef.current) return;
             const rect = sectionRef.current.getBoundingClientRect();
-            const x = (e.clientX - rect.left - rect.width / 2) / 20;
-            const y = (e.clientY - rect.top - rect.height / 2) / 20;
+            // Smoother parallax
+            const x = (e.clientX - rect.left - rect.width / 2) / 25;
+            const y = (e.clientY - rect.top - rect.height / 2) / 25;
             setMousePos({ x, y });
         };
 
@@ -26,69 +27,74 @@ export const BeesSection: React.FC<Props> = ({ ratings, onRatingChange }) => {
     return (
         <div
             ref={sectionRef}
-            className="relative w-full h-full bg-beesYellow flex flex-col items-center justify-center overflow-hidden"
+            className="relative w-full h-full flex flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-[#FFE600] to-[#D4A000]"
         >
-            {/* Floating Background Effects */}
+            {/* Ambient Hexagon Pattern / Dark Overlay */}
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,0,0,0.02)_0%,rgba(0,0,0,0.15)_100%)] pointer-events-none" />
+
+            {/* Dark Parallax Effects instead of glowing */}
             <div
-                className="absolute w-[400px] h-[400px] rounded-full opacity-20 blur-3xl"
+                className="absolute w-[500px] h-[500px] rounded-full opacity-[0.08] blur-[60px]"
                 style={{
                     background: 'radial-gradient(circle, #000 0%, transparent 70%)',
-                    transform: `translate(${-mousePos.x}px, ${-mousePos.y}px)`,
+                    transform: `translate(${-mousePos.x * 1.5}px, ${-mousePos.y * 1.5}px)`,
                     transition: 'transform 0.1s ease-out'
                 }}
             />
 
-            {/* Floating Hexagon SVGs */}
+            {/* Floating Hexagon SVGs with dark stroke */}
             <div
-                className="absolute right-10 top-32 opacity-20 animate-float"
+                className="absolute right-8 top-28 opacity-15 animate-float"
                 style={{
-                    transform: `translate(${-mousePos.x * 1.5}px, ${-mousePos.y * 1.5}px)`,
+                    transform: `translate(${-mousePos.x * 2}px, ${-mousePos.y * 2}px)`,
                     transition: 'transform 0.1s ease-out'
                 }}
             >
-                <svg width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="#000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="#000" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="drop-shadow-md">
                     <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
                 </svg>
             </div>
 
             <div
-                className="absolute left-20 bottom-32 opacity-20 animate-float-delayed"
+                className="absolute left-16 bottom-24 opacity-10 animate-float-delayed"
                 style={{
-                    transform: `translate(${-mousePos.x * 0.8}px, ${-mousePos.y * 0.8}px)`,
+                    transform: `translate(${-mousePos.x * 1.2}px, ${-mousePos.y * 1.2}px)`,
                     transition: 'transform 0.1s ease-out'
                 }}
             >
-                <svg width="180" height="180" viewBox="0 0 24 24" fill="none" stroke="#000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="180" height="180" viewBox="0 0 24 24" fill="none" stroke="#000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="drop-shadow-md" style={{ animationDelay: '1.5s' }}>
                     <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
                 </svg>
             </div>
 
-            <div className="z-10 mb-6 w-40 h-40 rounded-full overflow-hidden border-4 border-beesBlack shadow-[0_15px_30px_rgba(0,0,0,0.6)]">
+            {/* Logo */}
+            <div className="z-10 mb-6 w-44 h-44 rounded-full overflow-hidden border-[4px] border-beesBlack shadow-[0_15px_35px_rgba(0,0,0,0.3)] transition-transform duration-700 hover:scale-105">
                 <img src="/logo/bees.jpeg" alt="The Bees Logo" className="w-full h-full object-cover" />
             </div>
-            <h1 className="z-10 text-6xl md:text-8xl font-bees font-black text-beesBlack mb-2 tracking-tight uppercase text-center">
+            
+            <h1 className="z-10 text-6xl md:text-8xl font-bees font-black text-beesBlack mb-2 tracking-tight uppercase text-center drop-shadow-sm">
                 The Bees
             </h1>
-            <p className="z-10 text-beesBlack/80 font-base font-semibold text-xl mb-8 max-w-sm text-center">
+            <p className="z-10 text-beesBlack/80 font-base font-semibold tracking-wide text-lg mb-10 max-w-sm text-center">
                 Energy, Buzz, and the Hive Mind.
             </p>
 
-            {/* V2 Compact Rating Block */}
-            <div className="z-10 bg-white/20 backdrop-blur-md p-6 rounded-2xl border border-black/10 shadow-lg flex flex-col items-center">
+            {/* Pro Max Glassmorphism Rating Block (Dark version on yellow bg) */}
+            <div className="z-10 glass-panel-dark p-6 rounded-3xl flex flex-col items-center min-w-[300px]">
                 {['Bouffe', 'Ambiance', 'Projets', 'Respect'].map((crit) => (
                     <StarRating
                         key={crit}
                         label={crit}
                         value={ratings[crit] || 0}
                         onChange={(val) => onRatingChange(crit, val)}
-                        activeColor="#000000"
-                        inactiveColor="rgba(0, 0, 0, 0.15)"
+                        activeColor="#FFE600"
+                        inactiveColor="rgba(255, 255, 255, 0.2)"
                     />
                 ))}
             </div>
 
-            <button className="z-10 mt-8 text-black/60 hover:text-black font-base font-medium text-sm underline underline-offset-4 transition-colors">
-                Afficher les détails de la notation
+            <button className="z-10 mt-8 text-beesBlack/60 hover:text-beesBlack font-base text-sm uppercase tracking-widest font-semibold transition-all duration-300">
+                Détails de notation
             </button>
         </div>
     );

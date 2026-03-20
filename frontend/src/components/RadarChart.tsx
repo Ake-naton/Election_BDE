@@ -8,9 +8,9 @@ interface Props {
 }
 
 export const RadarChart: React.FC<Props> = ({ olympusData, beesData, maxVal = 10 }) => {
-    const size = 300;
+    const size = 320;
     const center = size / 2;
-    const radius = center - 40; // Padding for labels
+    const radius = center - 50; // Padding for labels
     const angleSlice = (Math.PI * 2) / 4; // 4 axes
 
     // Labels for the axes
@@ -40,6 +40,17 @@ export const RadarChart: React.FC<Props> = ({ olympusData, beesData, maxVal = 10
     return (
         <div className="flex justify-center items-center w-full">
             <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+                <defs>
+                    <filter id="glowGold" x="-20%" y="-20%" width="140%" height="140%">
+                        <feGaussianBlur stdDeviation="4" result="blur" />
+                        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                    </filter>
+                    <filter id="glowYellow" x="-20%" y="-20%" width="140%" height="140%">
+                        <feGaussianBlur stdDeviation="4" result="blur" />
+                        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                    </filter>
+                </defs>
+
                 {/* Draw the 4 concentric background webs (25%, 50%, 75%, 100%) */}
                 {[0.25, 0.5, 0.75, 1].map((scale, i) => {
                     const r = radius * scale;
@@ -51,7 +62,7 @@ export const RadarChart: React.FC<Props> = ({ olympusData, beesData, maxVal = 10
                     }).join(' ') + ' Z';
 
                     return (
-                        <path key={i} d={bgPath} fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="1" />
+                        <path key={i} d={bgPath} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="1" />
                     );
                 })}
 
@@ -59,7 +70,7 @@ export const RadarChart: React.FC<Props> = ({ olympusData, beesData, maxVal = 10
                 {labels.map((_, i) => {
                     const { x, y } = getCoordinatesForValue(maxVal, i);
                     return (
-                        <line key={i} x1={center} y1={center} x2={x} y2={y} stroke="rgba(255,255,255,0.2)" strokeWidth="1" />
+                        <line key={i} x1={center} y1={center} x2={x} y2={y} stroke="rgba(255,255,255,0.15)" strokeWidth="1" strokeDasharray="4 4" />
                     );
                 })}
 
@@ -71,11 +82,13 @@ export const RadarChart: React.FC<Props> = ({ olympusData, beesData, maxVal = 10
                             key={label}
                             x={x}
                             y={y}
-                            fill="rgba(255,255,255,0.7)"
-                            fontSize="12"
+                            fill="rgba(255,255,255,0.9)"
+                            fontSize="11"
+                            fontWeight="600"
+                            letterSpacing="1px"
                             textAnchor="middle"
                             alignmentBaseline="middle"
-                            className="font-base"
+                            className="font-base uppercase filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]"
                         >
                             {label}
                         </text>
@@ -85,23 +98,25 @@ export const RadarChart: React.FC<Props> = ({ olympusData, beesData, maxVal = 10
                 {/* Olympus Polygon */}
                 <motion.path
                     d={olympusPath}
-                    fill="rgba(212, 175, 55, 0.4)" // olympusGold with opacity
-                    stroke="#D4AF37"
-                    strokeWidth="2"
+                    fill="rgba(228, 192, 66, 0.3)" // olympusGold with opacity
+                    stroke="#E4C042"
+                    strokeWidth="2.5"
+                    filter="url(#glowGold)"
                     initial={{ pathLength: 0, opacity: 0 }}
                     animate={{ pathLength: 1, opacity: 1, d: olympusPath }}
-                    transition={{ duration: 1, ease: 'easeInOut' }}
+                    transition={{ duration: 1.2, ease: 'easeInOut' }}
                 />
 
                 {/* Bees Polygon */}
                 <motion.path
                     d={beesPath}
-                    fill="rgba(0, 0, 0, 0.5)" // beesBlack with opacity
-                    stroke="#000000"
-                    strokeWidth="2"
+                    fill="rgba(255, 230, 0, 0.3)" // beesYellow with opacity
+                    stroke="#FFE600"
+                    strokeWidth="2.5"
+                    filter="url(#glowYellow)"
                     initial={{ pathLength: 0, opacity: 0 }}
                     animate={{ pathLength: 1, opacity: 1, d: beesPath }}
-                    transition={{ duration: 1, ease: 'easeInOut' }}
+                    transition={{ duration: 1.2, ease: 'easeInOut' }}
                 />
             </svg>
         </div>
