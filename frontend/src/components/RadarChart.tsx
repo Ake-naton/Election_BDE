@@ -8,9 +8,9 @@ interface Props {
 }
 
 export const RadarChart: React.FC<Props> = ({ olympusData, beesData, maxVal = 10 }) => {
-    const size = 320;
+    const size = 280;
     const center = size / 2;
-    const radius = center - 50; // Padding for labels
+    const radius = center - 60; // Extra Padding for labels to not cut off
     const angleSlice = (Math.PI * 2) / 4; // 4 axes
 
     // Labels for the axes
@@ -42,11 +42,11 @@ export const RadarChart: React.FC<Props> = ({ olympusData, beesData, maxVal = 10
             <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
                 <defs>
                     <filter id="glowGold" x="-20%" y="-20%" width="140%" height="140%">
-                        <feGaussianBlur stdDeviation="4" result="blur" />
+                        <feGaussianBlur stdDeviation="3" result="blur" />
                         <feComposite in="SourceGraphic" in2="blur" operator="over" />
                     </filter>
-                    <filter id="glowYellow" x="-20%" y="-20%" width="140%" height="140%">
-                        <feGaussianBlur stdDeviation="4" result="blur" />
+                    <filter id="glowBlack" x="-20%" y="-20%" width="140%" height="140%">
+                        <feGaussianBlur stdDeviation="3" result="blur" />
                         <feComposite in="SourceGraphic" in2="blur" operator="over" />
                     </filter>
                 </defs>
@@ -82,13 +82,13 @@ export const RadarChart: React.FC<Props> = ({ olympusData, beesData, maxVal = 10
                             key={label}
                             x={x}
                             y={y}
-                            fill="rgba(255,255,255,0.9)"
-                            fontSize="11"
-                            fontWeight="600"
-                            letterSpacing="1px"
+                            fill="rgba(255,255,255,1)"
+                            fontSize="10"
+                            fontWeight="700"
+                            letterSpacing="1.5px"
                             textAnchor="middle"
                             alignmentBaseline="middle"
-                            className="font-base uppercase filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]"
+                            className="font-base uppercase filter drop-shadow-[0_2px_4px_rgba(0,0,0,1)]"
                         >
                             {label}
                         </text>
@@ -110,10 +110,10 @@ export const RadarChart: React.FC<Props> = ({ olympusData, beesData, maxVal = 10
                 {/* Bees Polygon */}
                 <motion.path
                     d={beesPath}
-                    fill="rgba(255, 230, 0, 0.3)" // beesYellow with opacity
-                    stroke="#FFE600"
+                    fill="rgba(10, 10, 10, 0.4)" // Dark/Anthracite with opacity
+                    stroke="#000000"
                     strokeWidth="2.5"
-                    filter="url(#glowYellow)"
+                    filter="url(#glowBlack)"
                     initial={{ pathLength: 0, opacity: 0 }}
                     animate={{ pathLength: 1, opacity: 1, d: beesPath }}
                     transition={{ duration: 1.2, ease: 'easeInOut' }}

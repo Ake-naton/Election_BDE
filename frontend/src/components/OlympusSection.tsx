@@ -67,12 +67,11 @@ export const OlympusSection: React.FC<Props> = ({ ratings, onRatingChange }) => 
                 </svg>
             </div>
 
-            {/* Logo */}
-            <div className="z-10 mb-6 w-44 h-44 rounded-full overflow-hidden border-[3px] border-olympusGold shadow-[0_0_35px_rgba(228,192,66,0.4)] transition-transform duration-700 hover:scale-105">
+            <div className="z-10 mb-6 w-40 h-40 rounded-full overflow-hidden border-[3px] border-olympusGold shadow-[0_0_35px_rgba(228,192,66,0.4)] transition-transform duration-700 hover:scale-105">
                 <img src="/logo/olympus.jpeg" alt="Olympus Logo" className="w-full h-full object-cover" />
             </div>
             
-            <h1 className="z-10 text-6xl md:text-8xl font-olympus text-olympusGold mb-2 tracking-widest text-center text-glow-gold">
+            <h1 className="z-10 text-5xl md:text-7xl font-olympus text-olympusGold mb-2 tracking-widest text-center text-glow-gold">
                 OLYMPUS
             </h1>
             <p className="z-10 text-olympusGold/80 font-base text-lg mb-10 max-w-sm text-center font-light tracking-wide">
@@ -93,7 +92,7 @@ export const OlympusSection: React.FC<Props> = ({ ratings, onRatingChange }) => 
                 ))}
             </div>
 
-            <button className="z-10 mt-8 text-olympusGold/50 hover:text-olympusGold hover:text-glow-gold font-base text-sm uppercase tracking-widest transition-all duration-300">
+            <button className="z-10 mt-8 text-olympusGold/90 hover:text-olympusGold hover:text-glow-gold font-base text-sm uppercase tracking-widest transition-all duration-300 font-semibold drop-shadow-sm">
                 Détails de notation
             </button>
         </div>

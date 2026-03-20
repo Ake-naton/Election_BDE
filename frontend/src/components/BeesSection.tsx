@@ -67,12 +67,11 @@ export const BeesSection: React.FC<Props> = ({ ratings, onRatingChange }) => {
                 </svg>
             </div>
 
-            {/* Logo */}
-            <div className="z-10 mb-6 w-44 h-44 rounded-full overflow-hidden border-[4px] border-beesBlack shadow-[0_15px_35px_rgba(0,0,0,0.3)] transition-transform duration-700 hover:scale-105">
-                <img src="/logo/bees.jpeg" alt="The Bees Logo" className="w-full h-full object-cover" />
+            <div className="z-10 mb-6 w-40 h-40 transition-transform duration-700 hover:scale-105">
+                <img src="/logo/bees.jpeg" alt="The Bees Logo" className="w-full h-full object-contain mix-blend-multiply" />
             </div>
             
-            <h1 className="z-10 text-6xl md:text-8xl font-bees font-black text-beesBlack mb-2 tracking-tight uppercase text-center drop-shadow-sm">
+            <h1 className="z-10 text-5xl md:text-7xl font-bees font-black text-beesBlack mb-2 tracking-tight uppercase text-center drop-shadow-sm">
                 The Bees
             </h1>
             <p className="z-10 text-beesBlack/80 font-base font-semibold tracking-wide text-lg mb-10 max-w-sm text-center">
@@ -87,13 +86,13 @@ export const BeesSection: React.FC<Props> = ({ ratings, onRatingChange }) => {
                         label={crit}
                         value={ratings[crit] || 0}
                         onChange={(val) => onRatingChange(crit, val)}
-                        activeColor="#FFE600"
-                        inactiveColor="rgba(255, 255, 255, 0.2)"
+                        activeColor="#111111"
+                        inactiveColor="rgba(0, 0, 0, 0.25)"
                     />
                 ))}
             </div>
 
-            <button className="z-10 mt-8 text-beesBlack/60 hover:text-beesBlack font-base text-sm uppercase tracking-widest font-semibold transition-all duration-300">
+            <button className="z-10 mt-8 text-beesBlack/90 hover:text-black font-base text-sm uppercase tracking-widest font-bold transition-all duration-300 drop-shadow-sm">
                 Détails de notation
             </button>
         </div>
